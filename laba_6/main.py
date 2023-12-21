@@ -3,6 +3,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from scipy.spatial.transform import Rotation
 import mplcursors
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 class Interactive3DPlot:
     def __init__(self, vertices):
@@ -16,16 +17,16 @@ class Interactive3DPlot:
         return np.array([
             [0, 0, 0],
             [1, 0, 0],
+            [1, 0.4, 0],
+            [0.6, 0.4, 0],
+            [0.6, 0.6, 0],
+            [1, 0.6, 0],
             [1, 1, 0],
-            [0.5, 1, 0],
-            [0.5, 0.5, 0],
-            [0, 0.5, 0],
-            [0.5, 0.5, 1],
-            [0, 0.5, 1],
-            [0, 0, 1],
-            [1, 0, 1],
+            [0, 1, 0],
+            [0, 1, 1],
             [1, 1, 1],
-            [0, 1, 1]
+            [1, 0, 1],
+            [0, 0, 1],
         ])
 
     def apply_transformation(self, vertices):
@@ -34,8 +35,16 @@ class Interactive3DPlot:
     def plot_3d(self, event=None):
         self.ax.clear()
         rotated_vertices = self.apply_transformation(self.vertices)
-        for face in rotated_vertices:
-            self.ax.add_collection3d(plt.Polygon(face, color='blue'))
+        faces = [
+            [rotated_vertices[0], rotated_vertices[1], rotated_vertices[5], rotated_vertices[6]],
+            [rotated_vertices[1], rotated_vertices[2], rotated_vertices[4], rotated_vertices[5]],
+            [rotated_vertices[2], rotated_vertices[3], rotated_vertices[4]],
+            [rotated_vertices[4], rotated_vertices[5], rotated_vertices[8], rotated_vertices[9]],
+            [rotated_vertices[5], rotated_vertices[6], rotated_vertices[7], rotated_vertices[8]],
+            [rotated_vertices[9], rotated_vertices[10], rotated_vertices[11], rotated_vertices[8]],
+        ]
+        colors = ['red', 'green', 'blue', 'purple', 'orange', 'pink']
+        self.ax.add_collection3d(Poly3DCollection(faces, facecolors=colors, linewidths=1, edgecolors='black', alpha=0.5))
         self.ax.quiver(0, 0, 0, 1.2, 0, 0, color='red', arrow_length_ratio=0.1)
         self.ax.quiver(0, 0, 0, 0, 1.2, 0, color='green', arrow_length_ratio=0.1)
         self.ax.quiver(0, 0, 0, 0, 0, 1.2, color='purple', arrow_length_ratio=0.1)

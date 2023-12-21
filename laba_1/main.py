@@ -25,22 +25,29 @@ class ColorPickerApp:
         self.lab_entry = tk.Entry(root, textvariable=self.lab_var)
         self.lab_entry.grid(row=2, column=1, padx=5, pady=5)
 
+        self.color_frame = tk.Frame(root, width=50, height=50, bg=self.get_rgb_color())
+        self.color_frame.grid(row=3, column=0, columnspan=2, pady=10)
+
         self.update_button = ttk.Button(root, text="Update", command=self.update_color)
-        self.update_button.grid(row=3, column=0, columnspan=2, pady=10)
+        self.update_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+    def get_rgb_color(self):
+        rgb_values = [int(x) for x in self.rgb_var.get().split(',')]
+        return "#{:02x}{:02x}{:02x}".format(*rgb_values)
 
     def update_color(self):
         try:
-            rgb_values = [int(x) for x in self.rgb_var.get().split(',')]
-            hsv_values = [int(x) for x in self.hsv_var.get().split(',')]
-            lab_values = [int(x) for x in self.lab_var.get().split(',')]
-            
             # Convert RGB to HSV and LAB
+            rgb_values = [int(x) for x in self.rgb_var.get().split(',')]
             hsv_result = cspace_converter("sRGB1", "CAM02-UCS")(rgb_values)
             lab_result = cspace_converter("sRGB1", "CIELab")(rgb_values)
 
             # Display the converted values
             self.hsv_var.set(", ".join(map(str, map(round, hsv_result))))
             self.lab_var.set(", ".join(map(str, map(round, lab_result))))
+
+            # Update the color frame
+            self.color_frame.config(bg=self.get_rgb_color())
         except ValueError:
             print("Invalid input. Please enter comma-separated integer values.")
 
