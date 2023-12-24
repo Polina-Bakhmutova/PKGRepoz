@@ -1,6 +1,3 @@
-import tkinter as tk
-from tkinter import ttk
-from colorspacious import cspace_converter
 
 class ColorPickerApp:
     def __init__(self, root):

@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
-
+from tkinter import filedialog
 
 def filter():
     # Получение введенных пользователем значений
@@ -29,7 +29,7 @@ def filter():
     eroded_image = cv2.erode(dilated_image, kernel, iterations=1)
 
     # Применение высокочастотного фильтра (увеличение резкости)
-    high_pass_filtered_image = cv2.filter2D(selected_image, -1, np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]))
+    high_pass_filtered_image = cv2.filter2D(selected_image, -1, np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]]))
 
     # Отображение результатов
     cv2.imshow('Morphology', eroded_image)
@@ -37,6 +37,10 @@ def filter():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def open_file_dialog():
+    file_path = filedialog.askopenfilename(initialdir="/", title="Select file",
+                                           filetypes=(("Image files", "*.png;*.jpg;*.jpeg"), ("all files", "*.*")))
+    image_combobox.set(file_path)
 
 # Создание графического интерфейса
 root = tk.Tk()
@@ -59,8 +63,12 @@ image_label = ttk.Label(root, text='Выберите картинку:')
 image_label.pack()
 
 # Создание комбо-бокса для выбора картинки
-image_combobox = ttk.Combobox(root, values=['derevo.png', 'ded.png', 'WIN_20231105_11_02_59_Pro.jpg'])
+image_combobox = ttk.Combobox(root, values=['jaguar.png', 'lemur.jpg', 'cat.jpeg'])
 image_combobox.pack()
+
+# Добавление кнопки для выбора файла
+file_dialog_button = ttk.Button(root, text='Выбрать файл', command=open_file_dialog)
+file_dialog_button.pack()
 
 apply_button = ttk.Button(root, text='Применить', command=filter)
 apply_button.pack()
